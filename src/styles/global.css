@@ -1,0 +1,305 @@
+/* ---------------------------------------------------------------------------
+   Design tokens
+
+   Dark-first. Amber phosphor rather than the usual terminal green — green is
+   the most overused choice in this genre and reads as costume.
+   Change --accent here and it changes everywhere.
+   --------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: dark;
+
+  --bg:        #0b0c0e;
+  --bg-raised: #131519;
+  --bg-inset:  #08090b;
+  --text:      #d9d5cd;
+  --text-dim:  #8b857a;
+  --text-faint:#5b574f;
+  --border:    #23252b;
+  --accent:    #ffb000;
+  --accent-dim:#7a5400;
+  --selection: #ffb00033;
+
+  /* ponytail: system stacks, not webfonts. Zero network, zero layout shift, and
+     the mono is literally the font their terminal uses. Swap in @fontsource-variable
+     if brand consistency across OSes ever matters more than LCP. */
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Sticky header height. Feeds scroll-margin so an anchor target does not
+     land underneath the bar. */
+  --head-h: 4.9rem;
+
+  /* Page column. In rem, not ch, on purpose: `ch` resolves against each
+     element's own font, and the header and footer set their own (mono, at a
+     smaller size). With ch they computed different widths from <main> and
+     centred at different x positions, so the rules and content did not line up. */
+  --wrap: 45rem;
+
+  --measure: 68ch;
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+  --rhythm: clamp(3rem, 9vw, 5.5rem);
+
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0:  clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+  --step-1:  clamp(1.15rem, 1.08rem + 0.35vw, 1.4rem);
+  --step-2:  clamp(1.45rem, 1.3rem + 0.75vw, 2rem);
+  --step-3:  clamp(1.9rem, 1.6rem + 1.5vw, 3rem);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:        #faf8f3;
+  --bg-raised: #f1ede4;
+  --bg-inset:  #efeae0;
+  --text:      #17191d;
+  --text-dim:  #5d5952;
+  --text-faint:#8b867c;
+  --border:    #ddd7ca;
+  --accent:    #8a4f00;
+  --accent-dim:#c9a86a;
+  --selection: #8a4f0022;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+::selection { background: var(--selection); }
+
+/* Everything structural is mono. Prose is sans — long body copy set in
+   monospace is genuinely tiring on a phone. */
+h1, h2, h3, .mono, code, kbd, pre, nav, footer, .prompt, .label {
+  font-family: var(--mono);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0 0 0.75em;
+}
+
+h1 { font-size: var(--step-3); margin-bottom: 0.5em; }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); }
+
+/* A heading that follows content needs room above it, not just below. */
+* + h2 { margin-top: 2.5rem; }
+* + h3 { margin-top: 1.75rem; }
+
+/* The prompt line is the command whose output is the heading, so it hugs. */
+.prompt + h1,
+.prompt + h2,
+.prompt + h3 { margin-top: 0; }
+
+p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
+
+a {
+  color: inherit;
+  text-decoration-color: var(--accent-dim);
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+  transition: color 0.12s ease, text-decoration-color 0.12s ease;
+}
+a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- shell furniture ----------------------------------------------------- */
+
+.prompt {
+  color: var(--text-faint);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+  display: block;
+  margin-bottom: 0.7rem;
+}
+.prompt::before {
+  content: "tanvir@sh " attr(data-cwd) " % ";
+  color: var(--accent);
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  background: var(--accent);
+  vertical-align: -0.16em;
+  animation: blink 1.15s steps(2, start) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.label {
+  font-size: var(--step--1);
+  color: var(--text-faint);
+  text-transform: lowercase;
+  letter-spacing: 0.06em;
+}
+
+/* --- layout -------------------------------------------------------------- */
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+main { padding-block: clamp(2.5rem, 8vw, 4.5rem) var(--rhythm); }
+/* Clear the sticky header, plus a little air. */
+section[id],
+[id] { scroll-margin-top: calc(var(--head-h) + 1rem + env(safe-area-inset-top, 0px)); }
+section + section { margin-top: var(--rhythm); }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin-block: var(--rhythm);
+}
+
+/* --- reusable bits ------------------------------------------------------- */
+
+.rule-list { list-style: none; margin: 0; padding: 0; }
+.rule-list > li { border-top: 1px solid var(--border); }
+.rule-list > li:last-child { border-bottom: 1px solid var(--border); }
+
+.entry {
+  display: block;
+  padding-block: 1.3rem;
+  text-decoration: none;
+  min-height: 44px;
+}
+.entry:hover .entry__title,
+.entry:focus-visible .entry__title { color: var(--accent); }
+.entry__title {
+  font-family: var(--mono);
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  transition: color 0.12s ease;
+}
+.entry__meta {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--text-faint);
+  margin-top: 0.2rem;
+}
+.entry__summary { color: var(--text-dim); margin: 0.45rem 0 0; max-width: var(--measure); }
+.entry__summary strong { color: var(--text); font-weight: 600; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-block: 2rem;
+}
+.stats:last-child { margin-bottom: 0; }
+.stats div { background: var(--bg); padding: 1.1rem 1.2rem; }
+.stats dt { font-family: var(--mono); font-size: var(--step-2); color: var(--accent); font-weight: 600; }
+.stats dd { margin: 0.15rem 0 0; font-size: var(--step--1); color: var(--text-dim); }
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
+.tags li {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.5rem;
+}
+
+.hint {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--text-faint);
+}
+.hint code {
+  color: var(--accent);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  padding: 0.1em 0.4em;
+}
+
+@media (max-width: 32rem) {
+  :root { --head-h: 7.4rem; }
+}
+
+/* Icon + label link rows. Shared by the footer and /about, and global rather
+   than page-scoped so there is one definition instead of two that drift. */
+.icon-links {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+.icon-links li { margin: 0; }
+.icon-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  text-decoration-color: var(--border);
+}
+.icon-links a:hover,
+.icon-links a:focus-visible {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+.icon-links svg { flex: 0 0 auto; }
+
+/* Footer lays them in a row; /about keeps them stacked. */
+.icon-links--row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+}
+
+/* Stacked lists get the same marker as the other lists on the page. Flex on the
+   li so the marker centres against the 44px link rather than sitting at the top
+   of its line box. */
+.icon-links--marked li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.icon-links--marked li::before {
+  content: '▸';
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.85em;
+  flex: 0 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .cursor { opacity: 1; }
+}

@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="404 — command not found"
+  description="That page does not exist."
+  cwd="~"
+>
+  <span slot="command">cd .</span>
+
+  <h1 class="err">command not found</h1>
+  <p class="summary">
+    Nothing lives at that address. <span class="cursor" aria-hidden="true"></span>
+  </p>
+
+  <ul class="rule-list">
+    <li><a class="entry" href="/"><span class="entry__title">~</span><p class="entry__summary">home</p></a></li>
+    <li><a class="entry" href="/work/"><span class="entry__title">~/work</span><p class="entry__summary">selected work</p></a></li>
+    <li><a class="entry" href="/about/"><span class="entry__title">~/about</span><p class="entry__summary">background</p></a></li>
+  </ul>
+
+  <style>
+    .err { color: var(--accent); }
+    .summary { color: var(--text-dim); margin-block: 1rem 2rem; }
+  </style>
+</Base>

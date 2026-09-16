@@ -1,0 +1,25 @@
+{
+  "name": "tanvir-sh",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro build && wrangler dev",
+    "deploy": "astro build && wrangler deploy",
+    "check": "npm run build && node scripts/check-commands.mjs && node scripts/check-spacing.mjs",
+    "check:commands": "node scripts/check-commands.mjs",
+    "check:spacing": "node scripts/check-spacing.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.2",
+    "astro-og-canvas": "^0.13.2",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260915.1",
+    "wrangler": "^4.132.0"
+  }
+}

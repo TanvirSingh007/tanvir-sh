@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { profile, site } from '../data/profile';
+import { emphasize, plain } from '../lib/emphasis';
+import { profilePageSchema } from '../lib/jsonld';
+
+const featured = (await getCollection('work'))
+  .filter((e) => e.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+// Meta descriptions and OG tags take plain text, never markup.
+const plainSummary = plain(profile.summary);
+---
+
+<Base title={site.title} description={plainSummary} cwd="~" jsonLd={profilePageSchema()}>
+  <span slot="command">whoami</span>
+
+  {/* A section like the rest, so `section + section` spaces every gap equally. */}
+  <section class="intro">
+    <h1>{profile.name}</h1>
+    <p class="lede">
+      {profile.role} at {profile.employer}. <strong>{profile.tagline}</strong>
+    </p>
+    <p class="summary" set:html={emphasize(profile.summary)} />
+
+    <dl class="stats">
+      {profile.stats.map((s) => (
+        <div>
+          <dt>{s.value}</dt>
+          <dd>{s.label}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section id="agents" aria-labelledby="agents-h">
+    <p class="prompt" data-cwd="~"><span>cat agents.md</span></p>
+    <h2 id="agents-h">Engineering with agents</h2>
+    <p class="summary">
+      Since 2025 most of my work has been making AI agents genuinely useful on
+      products they could not touch before: <strong>harnesses</strong> for
+      platforms they cannot reach, the <strong>knowledge base</strong> they
+      answer from, and the check that makes the output trustworthy, where every
+      regression test has to be <strong>observed failing</strong> before a fix
+      goes back in.
+    </p>
+    <p class="summary">
+      The pipelines built on top take a defect ticket through reproduction, crash
+      dump analysis, fix, pull request, tests and review. They are <strong>used
+      across the team</strong> now, and my own merged output went
+      from <strong>41 changes in 2024 to 179 so far this year</strong>.
+    </p>
+    <p class="more mono"><a href="/agents/">how it works →</a></p>
+  </section>
+
+  <section id="work" aria-labelledby="work-h">
+    <p class="prompt" data-cwd="~"><span>ls work/</span></p>
+    <h2 id="work-h">Selected work</h2>
+    {featured.length === 0 ? (
+      <p class="summary">Case studies are being written up.</p>
+    ) : (
+      <ul class="rule-list">
+        {featured.map((entry) => (
+          <li>
+            <a class="entry" href={`/work/${entry.id}/`}>
+              <div class="entry__title">{entry.data.title}</div>
+              <div class="entry__meta">{entry.data.role} · {entry.data.period}</div>
+              <p class="entry__summary" set:html={emphasize(entry.data.summary)} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+    <p class="more mono"><a href="/work/">all work →</a></p>
+  </section>
+
+  <section id="stack" aria-labelledby="stack-h">
+    <p class="prompt" data-cwd="~"><span>cat stack.txt</span></p>
+    <h2 id="stack-h">What I work with</h2>
+    {profile.domains.map((d) => (
+      <div class="domain">
+        <span class="label">{d.label}</span>
+        <ul class="tags">{d.items.map((i) => <li>{i}</li>)}</ul>
+      </div>
+    ))}
+  </section>
+
+  <section id="contact" aria-labelledby="contact-h">
+    <p class="prompt" data-cwd="~"><span>cat contact.txt</span></p>
+    <h2 id="contact-h">Get in touch</h2>
+    <p class="summary">
+      Email is best: <a href={`mailto:${profile.email}`}>{profile.email}</a>. I
+      read everything and reply to anything specific.
+    </p>
+  </section>
+
+  <style>
+    .lede {
+      font-family: var(--mono);
+      font-size: var(--step-1);
+      color: var(--text-dim);
+      margin-top: 1.1rem;
+      max-width: 38ch;
+      text-wrap: balance;
+    }
+    .lede strong { color: var(--text); font-weight: 600; }
+    .summary { color: var(--text-dim); }
+    .summary strong { color: var(--text); font-weight: 600; }
+    .domain { margin-bottom: 1.1rem; }
+    .domain:last-child { margin-bottom: 0; }
+    .domain .label { display: block; margin-bottom: 0.4rem; }
+    .more { margin-top: 1.25rem; font-size: var(--step--1); }
+    .more a { text-decoration: none; color: var(--accent); }
+    .more a:hover { text-decoration: underline; }
+
+  </style>
+</Base>

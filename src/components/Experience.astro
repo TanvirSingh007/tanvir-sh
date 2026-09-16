@@ -1,0 +1,51 @@
+---
+import { profile } from '../data/profile';
+---
+
+<ol class="exp">
+  {profile.history.map((job) => (
+    <li class="exp__job">
+      <div class="exp__head">
+        <h3 class="exp__role">{job.title}</h3>
+        <span class="exp__period">{job.period}</span>
+      </div>
+      <div class="exp__co">{job.company} · {job.location}</div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .exp { list-style: none; margin: 0; padding: 0; }
+  .exp__job { border-top: 1px solid var(--border); padding-block: 1.1rem; }
+  .exp__job:last-child { border-bottom: 1px solid var(--border); }
+
+  .exp__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 1rem;
+  }
+  .exp__role {
+    font-family: var(--mono);
+    font-size: var(--step-1);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .exp__period {
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+    margin-left: auto;
+  }
+  .exp__co {
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 34rem) {
+    .exp__period { margin-left: 0; width: 100%; }
+  }
+</style>

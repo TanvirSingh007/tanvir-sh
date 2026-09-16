@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { profile } from '../../data/profile';
+import { emphasize } from '../../lib/emphasis';
+import { breadcrumbSchema } from '../../lib/jsonld';
+
+const entries = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const title = `Work — ${profile.name}`;
+const description = `Selected engineering work by ${profile.name}, ${profile.role} at ${profile.employer}.`;
+---
+
+<Base
+  {title}
+  {description}
+  cwd="~/work"
+  jsonLd={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Work', path: '/work/' }])}
+>
+  <span slot="command">ls -l</span>
+
+  <h1>Work</h1>
+  <p class="summary">
+    Most of this is closed-source product work with no repository to link, so it
+    is written up as case studies instead: the problem, what I did, what changed.
+    Numbers come from the GitHub search API, not from memory.
+  </p>
+
+  <ul class="rule-list">
+    {entries.map((entry) => (
+      <li>
+        <a class="entry" href={`/work/${entry.id}/`}>
+          <div class="entry__title">{entry.data.title}</div>
+          <div class="entry__meta">{entry.data.role} · {entry.data.period}</div>
+          <p class="entry__summary" set:html={emphasize(entry.data.summary)} />
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <style>
+    .summary { color: var(--text-dim); margin-block: 1rem 2rem; }
+  </style>
+</Base>

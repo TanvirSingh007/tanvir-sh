@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import Experience from '../components/Experience.astro';
+import { profile } from '../data/profile';
+import { breadcrumbSchema } from '../lib/jsonld';
+
+const title = `Experience — ${profile.name}`;
+const description = `Roles, education and background for ${profile.name}, ${profile.role} at ${profile.employer}.`;
+---
+
+<Base
+  {title}
+  {description}
+  cwd="~"
+  jsonLd={breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Experience', path: '/experience/' },
+  ])}
+>
+  <span slot="command">cat experience.txt</span>
+
+  <h1>Experience</h1>
+  <p class="lede">
+    Roles and dates. The detail lives in the <a href="/work/">case studies</a>,
+    where there is room to say what actually happened.
+  </p>
+
+  <Experience />
+
+  <h2>Education</h2>
+  <p class="note">{profile.education.degree}</p>
+  <p class="note">{profile.education.school} · {profile.education.period}</p>
+
+  <h2>Achievements</h2>
+  <ul class="plain">
+    {profile.awards.map((a) => <li>{a}</li>)}
+  </ul>
+
+  <h2>Certifications</h2>
+  <ul class="plain">
+    <li>AWS Academy Graduate, Cloud Foundations</li>
+    <li>AWS Academy Graduate, Introduction to Cloud</li>
+  </ul>
+
+  <style>
+    .lede { color: var(--text-dim); max-width: var(--measure); margin-bottom: 2rem; }
+    .lede a { color: var(--accent); }
+    .note { color: var(--text-dim); margin-bottom: 0.25rem; }
+    .plain { list-style: none; margin: 0 0 1.5rem; padding: 0; max-width: var(--measure); }
+    .plain li { padding-left: 1.4rem; position: relative; margin-bottom: 0.5rem; color: var(--text-dim); }
+    .plain li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.85em;
+    }
+  </style>
+</Base>

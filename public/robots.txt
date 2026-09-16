@@ -1,0 +1,15 @@
+# tanvir.sh
+#
+# This file exists deliberately. Cloudflare serves its own Content Signals
+# Policy (search=yes, ai-train=no) to free-plan domains that do not ship a
+# robots.txt of their own — which is the opposite of what this site wants.
+# Shipping this file overrides that.
+
+User-agent: *
+Allow: /
+
+# Everything here is meant to be read: by people, by search engines, and by
+# assistants doing the reading on someone's behalf.
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
+Sitemap: https://tanvir.sh/sitemap-index.xml

@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile } from '../data/profile';
+import Icon from '../components/Icon.astro';
+import { profilePageSchema } from '../lib/jsonld';
+
+const title = `About — ${profile.name}`;
+const description = `${profile.role} at ${profile.employer}. ${profile.tagline}`;
+---
+
+<Base {title} {description} cwd="~" jsonLd={profilePageSchema()}>
+  <span slot="command">cat about.md</span>
+
+  <h1>About</h1>
+
+  <p>
+    I am a software engineer at Trilogy, where I am the product expert and
+    engineering owner for <strong>six enterprise SaaS products</strong>: a
+    customer advocacy platform, an employee social advocacy platform, a PaaS
+    hosting provider, two CRM platforms and a customer support suite. Most of
+    them arrived through acquisition, which means most of the code predates
+    everyone currently working on it.
+  </p>
+
+  <p>
+    That shapes the work. I spend my time in code I did not write, on products
+    whose original authors are long gone, and I own them from the first
+    reproduction of a customer defect through to the merged fix. Across two years
+    that is <strong>580 defects closed</strong>, <strong>266 pull requests
+    merged</strong>, and <strong>173 reviewed</strong> for other engineers, spread
+    over <strong>56 repositories</strong>.
+  </p>
+
+  <h2>Where the agents come in</h2>
+
+  <p>
+    The more interesting half is what happened when I stopped doing that work by
+    hand. AI coding agents were the obvious lever and, out of the box, useless
+    here: a two-decade-old desktop CRM builds on Windows, and the iPad client
+    needs real hardware to install and debug on. An agent that cannot reach the
+    platform cannot do the work.
+  </p>
+
+  <p>
+    So I built what it takes for them to work here. Harnesses that provision and
+    drive <strong>Windows virtual machines</strong> and
+    instrument <strong>physical iPads</strong>. A central knowledge base wired into the
+    agents so they answer from real product knowledge rather than guessing, which
+    cut onboarding onto an unfamiliar product by <strong>roughly 70
+    percent</strong>. Then serverless pipelines that take a defect ticket through
+    reproduction, crash dump analysis, fix, pull request, tests and review.
+  </p>
+
+  <p>
+    The part I care most about is the check on all of it. An agent will happily
+    write a regression test that passes against the broken code, which proves
+    nothing at all. Every test has to be <strong>observed failing</strong> before
+    the fix goes back in, enforced by a validation agent that rejects any test
+    never seen to fail. Without that, the throughput is worth nothing.
+  </p>
+
+  <p>
+    My own merged output went from <strong>41 changes in 2024 to 179 so far this
+    year</strong>. The pipelines are used across the team now.
+  </p>
+
+  <h2>How I work</h2>
+  <ul class="plain">
+    <li><strong>Reproduce first.</strong> A fix for a bug you have not seen is a guess.</li>
+    <li><strong>Fix it once, where every caller routes through.</strong> Patching the one path a ticket names leaves every sibling caller broken.</li>
+    <li><strong>Watch the test fail before you trust it.</strong> A test that
+      has never failed proves nothing, and that holds whether a person or an
+      agent wrote it.</li>
+    <li><strong>Small diffs.</strong> Reformatting unrelated code makes review harder for no gain.</li>
+  </ul>
+
+  <h2>Elsewhere</h2>
+  <ul class="icon-links icon-links--marked">
+    <li><a href={profile.links.github} rel="me noopener"><Icon name="github" />github.com/TanvirSingh007</a></li>
+    <li><a href={profile.links.linkedin} rel="me noopener"><Icon name="linkedin" />linkedin</a></li>
+    <li><a href={`mailto:${profile.email}`}><Icon name="email" />{profile.email}</a></li>
+  </ul>
+
+  <p class="note">
+    Roles, dates and education are on the <a href="/experience/">experience
+    page</a>.
+  </p>
+
+  <style>
+    p strong { color: var(--text); font-weight: 600; }
+
+    .plain { list-style: none; margin: 0 0 1.5rem; padding: 0; max-width: var(--measure); }
+    .plain li { padding-left: 1.4rem; position: relative; margin-bottom: 0.6rem; color: var(--text-dim); }
+    .plain li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.85em;
+    }
+    .plain strong { color: var(--text); font-weight: 600; }
+
+    h2 { margin-top: 2.75rem; margin-bottom: 0.9rem; }
+    .note { color: var(--text-dim); }
+  </style>
+</Base>

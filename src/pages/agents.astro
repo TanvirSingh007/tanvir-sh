@@ -1,0 +1,155 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile } from '../data/profile';
+import { breadcrumbSchema } from '../lib/jsonld';
+
+const title = `Engineering with agents — ${profile.name}`;
+const description =
+  'Harnesses for platforms AI agents cannot reach, the knowledge base they ' +
+  'answer from, and the pipelines that take a defect ticket through fix, test ' +
+  'and review.';
+---
+
+<Base
+  {title}
+  {description}
+  cwd="~"
+  jsonLd={breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Agents', path: '/agents/' },
+  ])}
+>
+  <span slot="command">cat agents.md</span>
+
+  <h1>Engineering with agents</h1>
+  <p class="lede">
+    Since 2025 most of my work has been making AI agents genuinely useful on
+    products they could not touch before. Three things had to be true at once,
+    and none of them are prompt engineering.
+  </p>
+
+  <ol class="pillars">
+    <li>
+      <span class="pillars__n">01</span>
+      <div>
+        <h2>Reach</h2>
+        <p>
+          An agent that cannot reach the platform cannot do the work. I build
+          harnesses that provision and drive <strong>Windows virtual
+          machines</strong> so agents can build a two-decade-old desktop CRM and
+          validate tests against it, and I
+          instrument <strong>physical iPad hardware</strong> so they can install
+          and debug iOS builds.
+        </p>
+      </div>
+    </li>
+    <li>
+      <span class="pillars__n">02</span>
+      <div>
+        <h2>Context</h2>
+        <p>
+          Reach without context is guesswork. A <strong>central knowledge
+          base</strong> covers every product in the portfolio, consolidating
+          documentation inherited through acquisition into one structured source,
+          and it is wired into the agents so they answer from real product
+          knowledge. It cut onboarding onto an unfamiliar product
+          by <strong>roughly 70 percent</strong>.
+        </p>
+        <p>
+          I wrote the <strong>bulk migration tool</strong> that moves legacy
+          documents in with AI-proposed structure, and
+          the <strong>per-product context layer</strong> each agent loads before
+          it touches a codebase.
+        </p>
+      </div>
+    </li>
+    <li>
+      <span class="pillars__n">03</span>
+      <div>
+        <h2>Trust</h2>
+        <p>
+          An agent will happily write a regression test that passes against the
+          broken code, which proves nothing. So every test has to
+          be <strong>observed failing</strong> before the fix goes back in,
+          enforced by a <strong>validation agent</strong> that rejects any test
+          never seen to fail.
+        </p>
+        <p>
+          Without that check the throughput is worth nothing, because you cannot
+          tell a fixed defect from one that was merely closed.
+        </p>
+      </div>
+    </li>
+  </ol>
+
+  <h2 class="std">What runs on top</h2>
+  <p>
+    <strong>Serverless pipelines</strong> take an incoming defect ticket,
+    reproduce the failure, <strong>analyse crash dumps on remote machines</strong>,
+    implement a fix, open a pull request, run the tests and review the result.
+    Engineers handle only what the agents cannot resolve.
+  </p>
+
+  <h2 class="std">What changed</h2>
+  <p>
+    My own merged output went from <strong>41 changes in the second half of
+    2024</strong>, to <strong>131 in 2025</strong>, to <strong>179 so far in
+    2026</strong>, while closing <strong>580 of 591</strong> assigned defects.
+    The pipelines are <strong>used across the team</strong> now rather than just
+    by me.
+  </p>
+
+  <p class="more mono"><a href="/work/agent-maintenance/">full case study →</a></p>
+
+  <style>
+    .lede {
+      font-family: var(--mono);
+      font-size: var(--step-1);
+      color: var(--text-dim);
+      max-width: 52ch;
+      text-wrap: pretty;
+    }
+    p { color: var(--text-dim); }
+    p strong { color: var(--text); font-weight: 600; }
+
+    .pillars {
+      list-style: none;
+      margin: 2rem 0;
+      padding: 0;
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .pillars li {
+      background: var(--bg);
+      padding: 1.4rem 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .pillars__n {
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--accent);
+      flex: 0 0 auto;
+      padding-top: 0.35em;
+    }
+    .pillars h2 {
+      font-size: var(--step-1);
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.015em;
+    }
+    .pillars p {
+      margin: 0 0 0.6rem;
+      font-size: var(--step--1);
+      line-height: 1.7;
+    }
+    .pillars p:last-child { margin-bottom: 0; }
+
+    .std { margin-top: 2.75rem; }
+    .more { margin-top: 2.5rem; font-size: var(--step--1); }
+    .more a { text-decoration: none; color: var(--accent); }
+    .more a:hover { text-decoration: underline; }
+  </style>
+</Base>

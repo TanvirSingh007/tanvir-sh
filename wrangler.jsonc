@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tanvir-sh",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-15",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    // Scoped to "/" on purpose. run_worker_first:true would bill every request as a
+    // Worker request and, past free-tier limits, return 429 instead of falling back
+    // to the static asset. Every other route stays on the free unmetered path.
+    "run_worker_first": ["/"]
+  },
+  "observability": { "enabled": true }
+}

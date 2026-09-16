@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { breadcrumbSchema } from '../../lib/jsonld';
+import { plain } from '../../lib/emphasis';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('work');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Base
+  title={`${entry.data.title} — Tanvir Singh`}
+  description={plain(entry.data.summary)}
+  cwd="~/work"
+  jsonLd={breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Work', path: '/work/' },
+    { name: entry.data.title, path: `/work/${entry.id}/` },
+  ])}
+>
+  <span slot="command">cat {entry.id}.md</span>
+
+  <article>
+    <h1>{entry.data.title}</h1>
+    <p class="meta mono">{entry.data.role} · {entry.data.period}</p>
+    {entry.data.stack.length > 0 && (
+      <ul class="tags">{entry.data.stack.map((s) => <li>{s}</li>)}</ul>
+    )}
+    {entry.data.link && (
+      <p class="link mono">
+        <a href={entry.data.link} rel="noopener">{entry.data.link.replace(/^https?:\/\//, '')} ↗</a>
+      </p>
+    )}
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+
+  <p class="back mono"><a href="/work/">← all work</a></p>
+
+  <style>
+    .meta { color: var(--text-faint); font-size: var(--step--1); margin-block: 0.75rem 1rem; }
+    .prose { margin-top: 2rem; }
+    .prose :global(h2) { margin-top: 2.5rem; margin-bottom: 0.75rem; }
+    .prose :global(p) { color: var(--text-dim); }
+    .prose :global(ul) { color: var(--text-dim); max-width: var(--measure); padding-left: 1.2rem; }
+    .prose :global(li) { margin-bottom: 0.4rem; }
+    .prose :global(strong) { color: var(--text); font-weight: 600; }
+    .link { margin-top: 1rem; font-size: var(--step--1); }
+    .link a { color: var(--accent); text-decoration: none; }
+    .link a:hover { text-decoration: underline; }
+    .back { margin-top: 3rem; font-size: var(--step--1); }
+    .back a { text-decoration: none; color: var(--accent); }
+    .back a:hover { text-decoration: underline; }
+  </style>
+</Base>
