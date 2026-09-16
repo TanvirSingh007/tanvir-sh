@@ -75,9 +75,11 @@ const description = `${profile.role} at ${profile.employer}. ${profile.tagline}`
   <ul class="roles">
     {profile.history.map((job) => (
       <li>
-        <span class="roles__title">{job.title}</span>
-        <span class="roles__co"><a href={`/experience/${job.slug}/`}>{job.company}</a></span>
-        <span class="roles__period">{job.period}</span>
+        <a class="roles__link" href={`/experience/${job.slug}/`}>
+          <span class="roles__title">{job.title}</span>
+          <span class="roles__co">{job.company}</span>
+          <span class="roles__period">{job.period}</span>
+        </a>
       </li>
     ))}
   </ul>
@@ -118,19 +120,23 @@ const description = `${profile.role} at ${profile.employer}. ${profile.tagline}`
     .plain strong { color: var(--text); font-weight: 600; }
 
     .roles { list-style: none; margin: 0 0 1rem; padding: 0; }
-    .roles li {
-      border-top: 1px solid var(--border);
-      padding-block: 0.7rem;
+    .roles li { border-top: 1px solid var(--border); }
+    .roles__link {
       display: flex;
       flex-wrap: wrap;
       gap: 0.15rem 1rem;
+      padding-block: 0.7rem;
+      min-height: 44px;
+      align-items: baseline;
       font-family: var(--mono);
       font-size: var(--step--1);
+      text-decoration: none;
     }
+    .roles__link:hover .roles__title,
+    .roles__link:focus-visible .roles__title { color: var(--accent); }
     .roles li:last-child { border-bottom: 1px solid var(--border); }
-    .roles__title { color: var(--text); font-weight: 600; }
-    .roles__co a { color: var(--text-dim); text-decoration-color: var(--border); }
-    .roles__co a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+    .roles__title { color: var(--text); font-weight: 600; transition: color 0.12s ease; }
+    .roles__co { color: var(--text-dim); }
     .roles__period { color: var(--text-faint); margin-left: auto; }
     @media (max-width: 34rem) {
       .roles__period { margin-left: 0; width: 100%; }

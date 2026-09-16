@@ -5,19 +5,31 @@ import { profile } from '../data/profile';
 <ol class="exp">
   {profile.history.map((job) => (
     <li class="exp__job">
-      <div class="exp__head">
-        <h3 class="exp__role">{job.title}</h3>
-        <span class="exp__period">{job.period}</span>
-      </div>
-      <div class="exp__co"><a href={`/experience/${job.slug}/`}>{job.company}</a> · {job.location}</div>
+      {/* One link for the whole row rather than separate ones on the role and the
+          company: same destination, and two adjacent links to the same page is
+          noise for anyone tabbing or using a screen reader. Matches .entry. */}
+      <a class="exp__link" href={`/experience/${job.slug}/`}>
+        <div class="exp__head">
+          <h3 class="exp__role">{job.title}</h3>
+          <span class="exp__period">{job.period}</span>
+        </div>
+        <div class="exp__co">{job.company} · {job.location}</div>
+      </a>
     </li>
   ))}
 </ol>
 
 <style>
   .exp { list-style: none; margin: 0; padding: 0; }
-  .exp__job { border-top: 1px solid var(--border); padding-block: 1.1rem; }
+  .exp__job { border-top: 1px solid var(--border); }
   .exp__job:last-child { border-bottom: 1px solid var(--border); }
+
+  .exp__link {
+    display: block;
+    padding-block: 1.1rem;
+    text-decoration: none;
+    min-height: 44px;
+  }
 
   .exp__head {
     display: flex;
@@ -31,6 +43,7 @@ import { profile } from '../data/profile';
     font-weight: 600;
     letter-spacing: -0.015em;
     margin: 0;
+    transition: color 0.12s ease;
   }
   .exp__period {
     font-family: var(--mono);
@@ -43,9 +56,13 @@ import { profile } from '../data/profile';
     font-size: var(--step--1);
     color: var(--text-faint);
     margin-top: 0.2rem;
+    transition: color 0.12s ease;
   }
-  .exp__co a { color: var(--text-dim); text-decoration-color: var(--border); }
-  .exp__co a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+  .exp__link:hover .exp__role,
+  .exp__link:focus-visible .exp__role { color: var(--accent); }
+  .exp__link:hover .exp__co,
+  .exp__link:focus-visible .exp__co { color: var(--text-dim); }
 
   @media (max-width: 34rem) {
     .exp__period { margin-left: 0; width: 100%; }
