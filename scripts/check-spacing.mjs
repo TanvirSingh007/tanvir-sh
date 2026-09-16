@@ -21,12 +21,12 @@ for (const file of files) {
   // A letter or digit immediately before an opening <strong>, or immediately
   // after a closing </strong>, means the separating space was eaten.
   const patterns = [
-    { re: /(\w[\w.,;:!?)]{1,})<strong[\s>]/g, side: 'before', tag: 'strong' },
-    { re: /<\/strong>(\w{2,})/g, side: 'after', tag: 'strong' },
+    { re: /(\w[\w.,;:!?)]*)<strong[\s>]/g, side: 'before', tag: 'strong' },
+    { re: /<\/strong>(\w+)/g, side: 'after', tag: 'strong' },
     // Same trap for links: an <a> starting its own source line loses the space
     // before it, rendering "on the<a>experience page</a>".
-    { re: /(\w[\w.,;:!?)]{1,})<a [^>]*>/g, side: 'before', tag: 'a' },
-    { re: /<\/a>(\w{2,})/g, side: 'after', tag: 'a' },
+    { re: /(\w[\w.,;:!?)]*)<a [^>]*>/g, side: 'before', tag: 'a' },
+    { re: /<\/a>(\w+)/g, side: 'after', tag: 'a' },
   ];
 
   for (const { re, side, tag } of patterns) {
