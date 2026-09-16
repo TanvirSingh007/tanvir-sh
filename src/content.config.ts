@@ -19,6 +19,10 @@ const work = defineCollection({
     featured: z.boolean().default(false),
     /** Public URL, when there is one. Most of this work has none. */
     link: z.url().optional(),
+    /** Capability tags. Drive the homepage grid and the tags on /work/. */
+    domains: z.array(z.enum(['infra', 'backend', 'ai', 'product', 'native'])).default([]),
+    /** Where the work happened. Metadata, not the filing system. */
+    context: z.enum(['trilogy', 'auribises', 'self-directed']).default('trilogy'),
   }),
 });
 

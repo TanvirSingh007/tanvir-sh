@@ -4,6 +4,8 @@ summary: '**Per-tenant CSP enforcement**, removing **hardcoded credentials** fro
 role: 'Engineering owner'
 period: '2025 — 2026'
 stack: ['Ruby on Rails', 'Chef', 'AWS', 'GitHub Actions', 'OIDC']
+domains: ['backend', 'infra']
+context: 'trilogy'
 order: 5
 featured: false
 ---

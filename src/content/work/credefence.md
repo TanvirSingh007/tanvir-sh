@@ -5,6 +5,8 @@ role: 'Built solo'
 period: '2024 — 2025'
 stack: ['Python', 'Android', 'PostgreSQL', 'REST']
 link: 'https://credefence.com'
+domains: ['product', 'backend']
+context: 'self-directed'
 order: 7
 featured: false
 ---

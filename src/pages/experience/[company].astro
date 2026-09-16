@@ -1,0 +1,154 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { companies } from '../../data/companies';
+import { profile } from '../../data/profile';
+import { emphasize, plain } from '../../lib/emphasis';
+import { breadcrumbSchema } from '../../lib/jsonld';
+
+export async function getStaticPaths() {
+  return companies.map((company) => ({ params: { company: company.slug }, props: { company } }));
+}
+
+const { company } = Astro.props;
+
+// The case studies from this role, pulled by the same `context` tag /work/ groups on.
+const studies = (await getCollection('work'))
+  .filter((e) => e.data.context === company.slug)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const description = plain(
+  `${company.role} at ${company.name}, ${company.period}. ${company.intro[0]}`
+).slice(0, 180);
+---
+
+<Base
+  title={`${company.name} — ${profile.name}`}
+  {description}
+  cwd="~/experience"
+  jsonLd={breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Experience', path: '/experience/' },
+    { name: company.name, path: `/experience/${company.slug}/` },
+  ])}
+>
+  <span slot="command">cat {company.slug}.md</span>
+
+  <h1>{company.name}</h1>
+  <p class="what">{company.what}</p>
+
+  <dl class="meta">
+    <div><dt>role</dt><dd>{company.role}</dd></div>
+    <div><dt>when</dt><dd>{company.period}</dd></div>
+    <div><dt>where</dt><dd>{company.location}</dd></div>
+  </dl>
+
+  {company.intro.map((para) => <p set:html={emphasize(para)} />)}
+
+  {company.stats.length > 0 && (
+    <dl class="stats">
+      {company.stats.map((s) => (
+        <div>
+          <dt>{s.value}</dt>
+          <dd>{s.label}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
+
+  {studies.length > 0 && (
+    <section aria-labelledby="cs">
+      <h2 id="cs">Case studies</h2>
+      <ul class="rule-list">
+        {studies.map((entry) => (
+          <li>
+            <a class="entry" href={`/work/${entry.id}/`}>
+              <div class="entry__title">{entry.data.title}</div>
+              <div class="entry__meta">{entry.data.role} · {entry.data.period}</div>
+              <p class="entry__summary" set:html={emphasize(entry.data.summary)} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {company.alsoDid.length > 0 && (
+    <section aria-labelledby="also">
+      <h2 id="also">Also did</h2>
+      <ul class="plain">
+        {company.alsoDid.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+  )}
+
+  {company.stack.length > 0 && (
+    <section aria-labelledby="stk">
+      <h2 id="stk">What I worked with</h2>
+      {company.stack.map((group) => (
+        <div class="domain">
+          <span class="label">{group.label}</span>
+          <ul class="tags">{group.items.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      ))}
+    </section>
+  )}
+
+  <p class="back mono"><a href="/experience/">← all roles</a></p>
+
+  <style>
+    .what {
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--text-faint);
+      margin-top: -0.4rem;
+    }
+    p { color: var(--text-dim); }
+    p :global(strong) { color: var(--text); font-weight: 600; }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 2rem;
+      margin: 1.25rem 0 1.75rem;
+      padding-block: 0.8rem;
+      border-block: 1px solid var(--border);
+    }
+    .meta div { display: flex; gap: 0.6rem; align-items: baseline; }
+    .meta dt {
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--text-faint);
+    }
+    .meta dd {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--text);
+    }
+
+    h2 { margin-top: 2.75rem; }
+    .plain { list-style: none; margin: 0; padding: 0; max-width: var(--measure); }
+    .plain li {
+      padding-left: 1.4rem;
+      position: relative;
+      margin-bottom: 0.6rem;
+      color: var(--text-dim);
+    }
+    .plain li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.85em;
+    }
+
+    .domain { margin-bottom: 1.1rem; }
+    .domain:last-child { margin-bottom: 0; }
+    .domain .label { display: block; margin-bottom: 0.4rem; }
+    .back { margin-top: 3rem; font-size: var(--step--1); }
+    .back a { text-decoration: none; color: var(--accent); }
+    .back a:hover { text-decoration: underline; }
+  </style>
+</Base>

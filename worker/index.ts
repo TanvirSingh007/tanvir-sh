@@ -22,13 +22,27 @@ const A = {
   amber: '\x1b[38;5;214m',
 } as const;
 
+/**
+ * `**bold**` from profile.ts becomes real ANSI bold here. A terminal is the one
+ * place that markup can render natively, so stripping it would lose information
+ * the browser version keeps.
+ */
+function ansiEmphasis(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, `${A.bold}$1${A.reset}`);
+}
+
+/** Printable width, ignoring escape sequences, so wrapping stays honest. */
+// eslint-disable-next-line no-control-regex
+const ANSI = /\x1b\[[0-9;]*m/g;
+const visibleLength = (s: string): number => s.replace(ANSI, '').length;
+
 /** Wrap on word boundaries at `width`, indenting every line. */
 function wrap(text: string, width: number, indent: string): string {
   const words = text.split(/\s+/);
   const lines: string[] = [];
   let line = '';
   for (const word of words) {
-    if (line.length + word.length + 1 > width) {
+    if (visibleLength(line) + visibleLength(word) + 1 > width) {
       lines.push(line);
       line = word;
     } else {
@@ -53,7 +67,7 @@ function card(): string {
     '',
     `${pad}${A.amber}${profile.tagline}${A.reset}`,
     '',
-    wrap(profile.summary, 64, pad),
+    wrap(ansiEmphasis(profile.summary), 64, pad),
     '',
     `${pad}${A.dim}${'-'.repeat(64)}${A.reset}`,
     '',

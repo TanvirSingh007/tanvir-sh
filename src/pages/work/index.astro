@@ -2,10 +2,19 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { profile } from '../../data/profile';
+import { contextLabels } from '../../data/domains';
 import { emphasize } from '../../lib/emphasis';
 import { breadcrumbSchema } from '../../lib/jsonld';
 
 const entries = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+
+// Grouped by where the work happened, in this order. Capability is carried by the
+// tags on each entry, so the grouping can stay chronological without hiding range.
+const order = ['trilogy', 'auribises', 'self-directed'] as const;
+const groups = order
+  .map((key) => ({ key, label: contextLabels[key], items: entries.filter((e) => e.data.context === key) }))
+  .filter((g) => g.items.length > 0);
+
 const title = `Work — ${profile.name}`;
 const description = `Selected engineering work by ${profile.name}, ${profile.role} at ${profile.employer}.`;
 ---
@@ -25,19 +34,50 @@ const description = `Selected engineering work by ${profile.name}, ${profile.rol
     Numbers come from the GitHub search API, not from memory.
   </p>
 
-  <ul class="rule-list">
-    {entries.map((entry) => (
-      <li>
-        <a class="entry" href={`/work/${entry.id}/`}>
-          <div class="entry__title">{entry.data.title}</div>
-          <div class="entry__meta">{entry.data.role} · {entry.data.period}</div>
-          <p class="entry__summary" set:html={emphasize(entry.data.summary)} />
-        </a>
-      </li>
-    ))}
-  </ul>
+  {groups.map((group) => (
+    <section class="group" aria-labelledby={`g-${group.key}`}>
+      <h2 id={`g-${group.key}`} class="group__h">{group.label}</h2>
+      <ul class="rule-list">
+        {group.items.map((entry) => (
+          <li>
+            <a class="entry" href={`/work/${entry.id}/`}>
+              <div class="entry__title">{entry.data.title}</div>
+              <div class="entry__meta">{entry.data.role} · {entry.data.period}</div>
+              <p class="entry__summary" set:html={emphasize(entry.data.summary)} />
+              {entry.data.domains.length > 0 && (
+                <ul class="doms">{entry.data.domains.map((d) => <li>{d}</li>)}</ul>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 
   <style>
-    .summary { color: var(--text-dim); margin-block: 1rem 2rem; }
+    .summary { color: var(--text-dim); margin-block: 1rem 2.5rem; }
+    .group + .group { margin-top: 2.75rem; }
+    .group__h {
+      font-size: var(--step-0);
+      color: var(--accent);
+      text-transform: lowercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+    .doms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      list-style: none;
+      margin: 0.6rem 0 0;
+      padding: 0;
+    }
+    .doms li {
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--text-faint);
+      border: 1px solid var(--border);
+      padding: 0.05rem 0.45rem;
+    }
   </style>
 </Base>

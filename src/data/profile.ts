@@ -52,10 +52,10 @@ export const profile = {
    *   gh search prs --author TanvirSingh007 --owner trilogy-group
    */
   stats: [
-    { value: '4x', label: 'output growth in 2 years' },
     { value: '580', label: 'defects closed' },
-    { value: '173', label: 'PRs reviewed for others' },
-    { value: '6', label: 'products owned' },
+    { value: '266', label: 'pull requests merged' },
+    { value: '173', label: 'reviewed for others' },
+    { value: '4x', label: 'output growth in 2 years' },
   ],
 
   domains: [
@@ -88,12 +88,14 @@ export const profile = {
    */
   history: [
     {
+      slug: 'trilogy',
       title: 'Software Engineer II',
       company: 'Trilogy (ESW Capital)',
       location: 'Austin, TX — remote',
       period: 'June 2024 — present',
     },
     {
+      slug: 'auribises',
       title: 'Full-Stack Developer',
       company: 'Auribises Technologies',
       location: 'Ludhiana, India',

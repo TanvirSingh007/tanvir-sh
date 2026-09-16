@@ -13,66 +13,78 @@ const description = `${profile.role} at ${profile.employer}. ${profile.tagline}`
 
   <h1>About</h1>
 
-  <p>
-    I am a software engineer at Trilogy, where I am the product expert and
-    engineering owner for <strong>six enterprise SaaS products</strong>: a
-    customer advocacy platform, an employee social advocacy platform, a PaaS
-    hosting provider, two CRM platforms and a customer support suite. Most of
-    them arrived through acquisition, which means most of the code predates
-    everyone currently working on it.
+  <p class="lede">
+    I like problems that come with no map. Most of what I have worked on arrived as
+    something already broken, already running, and written by people who left years
+    ago.
   </p>
 
   <p>
-    That shapes the work. I spend my time in code I did not write, on products
-    whose original authors are long gone, and I own them from the first
-    reproduction of a customer defect through to the merged fix. Across two years
-    that is <strong>580 defects closed</strong>, <strong>266 pull requests
-    merged</strong>, and <strong>173 reviewed</strong> for other engineers, spread
-    over <strong>56 repositories</strong>.
+    I started at an <a href="/experience/auribises/">agency</a>, where the job was
+    whatever the client needed that week and the infrastructure was whoever was free.
+    Now I am at <a href="/experience/trilogy/">Trilogy</a>, on enterprise products old
+    enough that the code predates everyone currently touching it. Both pages have the
+    detail.
   </p>
 
-  <h2>Where the agents come in</h2>
+  <h2>What I work across</h2>
 
   <p>
-    The more interesting half is what happened when I stopped doing that work by
-    hand. AI coding agents were the obvious lever and, out of the box, useless
-    here: a two-decade-old desktop CRM builds on Windows, and the iPad client
-    needs real hardware to install and debug on. An agent that cannot reach the
-    platform cannot do the work.
+    I have never been much use as a specialist. The jobs I have had rewarded being the
+    person who would take the thing nobody else wanted to own, and that tends to mean
+    the problem sits somewhere between the disciplines rather than inside one.
   </p>
 
   <p>
-    So I built what it takes for them to work here. Harnesses that provision and
-    drive <strong>Windows virtual machines</strong> and
-    instrument <strong>physical iPads</strong>. A central knowledge base wired into the
-    agents so they answer from real product knowledge rather than guessing, which
-    cut onboarding onto an unfamiliar product by <strong>roughly 70
-    percent</strong>. Then serverless pipelines that take a defect ticket through
-    reproduction, crash dump analysis, fix, pull request, tests and review.
+    In practice that is four areas. <strong>Infrastructure</strong>: build systems, CI
+    pipelines, runner fleets, and the servers underneath, at work and at
+    home. <strong>Backend</strong>: Rails, Python, Scala and .NET in multi-tenant SaaS,
+    plus the database work that comes with it, from keyset pagination to concurrent
+    migrations. <strong>AI</strong>: the harnesses, context and verification that make
+    agents useful on systems they cannot otherwise
+    reach. <strong>Product</strong>: things shipped to actual people, from schema
+    through interface and out to an app store.
   </p>
 
   <p>
-    The part I care most about is the check on all of it. An agent will happily
-    write a regression test that passes against the broken code, which proves
-    nothing at all. Every test has to be <strong>observed failing</strong> before
-    the fix goes back in, enforced by a validation agent that rejects any test
-    never seen to fail. Without that, the throughput is worth nothing.
+    The <a href="/">homepage</a> lists what each of those is backed by, because the
+    claim is worth nothing without it.
   </p>
 
   <p>
-    My own merged output went from <strong>41 changes in 2024 to 179 so far this
-    year</strong>. The pipelines are used across the team now.
+    There is also a <a href="/homelab/">homelab</a> that has grown well past what it
+    needed to be: self-hosted GitLab, Appwrite, photo and camera stacks doing real
+    inference on the box, behind nginx on an internal domain. Nobody pays me for it.
+    It is where I hold the pager for my own decisions, and it is the reason I am
+    comfortable owning infrastructure at work.
   </p>
 
   <h2>How I work</h2>
   <ul class="plain">
     <li><strong>Reproduce first.</strong> A fix for a bug you have not seen is a guess.</li>
     <li><strong>Fix it once, where every caller routes through.</strong> Patching the one path a ticket names leaves every sibling caller broken.</li>
-    <li><strong>Watch the test fail before you trust it.</strong> A test that
-      has never failed proves nothing, and that holds whether a person or an
-      agent wrote it.</li>
+    <li><strong>Watch the test fail before you trust it.</strong> A test that has
+      never failed proves nothing, and that holds whether a person or an agent
+      wrote it.</li>
     <li><strong>Small diffs.</strong> Reformatting unrelated code makes review harder for no gain.</li>
+    <li><strong>Operate what you build.</strong> You do not really understand a system
+      until something has gone wrong with it at an inconvenient hour.</li>
   </ul>
+
+  <h2>Where I have worked</h2>
+  <ul class="roles">
+    {profile.history.map((job) => (
+      <li>
+        <span class="roles__title">{job.title}</span>
+        <span class="roles__co"><a href={`/experience/${job.slug}/`}>{job.company}</a></span>
+        <span class="roles__period">{job.period}</span>
+      </li>
+    ))}
+  </ul>
+  <p class="note">
+    Full detail, education and certifications are on
+    the <a href="/experience/">experience page</a>.
+  </p>
 
   <h2>Elsewhere</h2>
   <ul class="icon-links icon-links--marked">
@@ -81,13 +93,17 @@ const description = `${profile.role} at ${profile.employer}. ${profile.tagline}`
     <li><a href={`mailto:${profile.email}`}><Icon name="email" />{profile.email}</a></li>
   </ul>
 
-  <p class="note">
-    Roles, dates and education are on the <a href="/experience/">experience
-    page</a>.
-  </p>
-
   <style>
+    .lede {
+      font-family: var(--mono);
+      font-size: var(--step-1);
+      color: var(--text-dim);
+      max-width: 48ch;
+      text-wrap: pretty;
+    }
+    p { color: var(--text-dim); }
     p strong { color: var(--text); font-weight: 600; }
+    p a { color: var(--accent); }
 
     .plain { list-style: none; margin: 0 0 1.5rem; padding: 0; max-width: var(--measure); }
     .plain li { padding-left: 1.4rem; position: relative; margin-bottom: 0.6rem; color: var(--text-dim); }
@@ -101,7 +117,26 @@ const description = `${profile.role} at ${profile.employer}. ${profile.tagline}`
     }
     .plain strong { color: var(--text); font-weight: 600; }
 
+    .roles { list-style: none; margin: 0 0 1rem; padding: 0; }
+    .roles li {
+      border-top: 1px solid var(--border);
+      padding-block: 0.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.15rem 1rem;
+      font-family: var(--mono);
+      font-size: var(--step--1);
+    }
+    .roles li:last-child { border-bottom: 1px solid var(--border); }
+    .roles__title { color: var(--text); font-weight: 600; }
+    .roles__co a { color: var(--text-dim); text-decoration-color: var(--border); }
+    .roles__co a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+    .roles__period { color: var(--text-faint); margin-left: auto; }
+    @media (max-width: 34rem) {
+      .roles__period { margin-left: 0; width: 100%; }
+    }
+
+    .note { color: var(--text-faint); font-size: var(--step--1); }
     h2 { margin-top: 2.75rem; margin-bottom: 0.9rem; }
-    .note { color: var(--text-dim); }
   </style>
 </Base>

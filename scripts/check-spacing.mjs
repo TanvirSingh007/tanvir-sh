@@ -21,13 +21,17 @@ for (const file of files) {
   // A letter or digit immediately before an opening <strong>, or immediately
   // after a closing </strong>, means the separating space was eaten.
   const patterns = [
-    { re: /(\w{2,})<strong[\s>]/g, side: 'before' },
-    { re: /<\/strong>(\w{2,})/g, side: 'after' },
+    { re: /(\w[\w.,;:!?)]{1,})<strong[\s>]/g, side: 'before', tag: 'strong' },
+    { re: /<\/strong>(\w{2,})/g, side: 'after', tag: 'strong' },
+    // Same trap for links: an <a> starting its own source line loses the space
+    // before it, rendering "on the<a>experience page</a>".
+    { re: /(\w[\w.,;:!?)]{1,})<a [^>]*>/g, side: 'before', tag: 'a' },
+    { re: /<\/a>(\w{2,})/g, side: 'after', tag: 'a' },
   ];
 
-  for (const { re, side } of patterns) {
+  for (const { re, side, tag } of patterns) {
     for (const m of body.matchAll(re)) {
-      failures.push(`${file.replace(/^dist\//, '')}: missing space ${side} <strong> near "${m[1]}"`);
+      failures.push(`${file.replace(/^dist\//, '')}: missing space ${side} <${tag}> near "${m[1]}"`);
     }
   }
 }
@@ -39,4 +43,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`✓ spacing around <strong> is correct in ${files.length} pages`);
+console.log(`✓ spacing around <strong> and <a> is correct in ${files.length} pages`);

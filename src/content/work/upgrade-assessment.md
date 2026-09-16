@@ -4,6 +4,8 @@ summary: '**Empty repository to signed public release in sixteen days**, built a
 role: 'Sole engineer, 95% of commits'
 period: '2026'
 stack: ['C#', '.NET', 'rules engine', 'code signing']
+domains: ['product', 'backend']
+context: 'trilogy'
 order: 3
 featured: true
 ---

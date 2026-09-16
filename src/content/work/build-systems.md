@@ -4,6 +4,8 @@ summary: 'Cut one enterprise CRM build from **over three hours to under ninety m
 role: 'Sole author'
 period: '2025 — 2026'
 stack: ['GitHub Actions', 'Jenkins', 'Windows runners', 'Terraform', 'PowerShell']
+domains: ['infra']
+context: 'trilogy'
 order: 2
 featured: true
 ---

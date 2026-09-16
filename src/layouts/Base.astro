@@ -22,6 +22,7 @@ const ogImage = new URL(
 const nav = [
   { href: '/agents/', label: 'agents' },
   { href: '/work/', label: 'work' },
+  { href: '/homelab/', label: 'homelab' },
   { href: '/experience/', label: 'experience' },
   { href: '/about/', label: 'about' },
 ];
@@ -155,7 +156,8 @@ const isCurrent = (href: string) => path.startsWith(href);
       .site-head nav { margin-left: auto; }
       .site-head ul {
         display: flex;
-        gap: clamp(0.75rem, 3vw, 1.4rem);
+        flex-wrap: wrap;
+        gap: 0 clamp(0.7rem, 2.6vw, 1.4rem);
         list-style: none;
         margin: 0;
         padding: 0;

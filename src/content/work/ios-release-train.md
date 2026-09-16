@@ -4,6 +4,8 @@ summary: '**Seventeen TestFlight builds in seven weeks** for an enterprise iPad 
 role: 'Release owner'
 period: '2026'
 stack: ['Objective-C', 'iOS', 'TestFlight', 'Fastlane', 'code signing']
+domains: ['product', 'native', 'infra']
+context: 'trilogy'
 order: 4
 featured: false
 ---

@@ -9,7 +9,7 @@ import { profile } from '../data/profile';
         <h3 class="exp__role">{job.title}</h3>
         <span class="exp__period">{job.period}</span>
       </div>
-      <div class="exp__co">{job.company} · {job.location}</div>
+      <div class="exp__co"><a href={`/experience/${job.slug}/`}>{job.company}</a> · {job.location}</div>
     </li>
   ))}
 </ol>
@@ -44,6 +44,8 @@ import { profile } from '../data/profile';
     color: var(--text-faint);
     margin-top: 0.2rem;
   }
+  .exp__co a { color: var(--text-dim); text-decoration-color: var(--border); }
+  .exp__co a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
   @media (max-width: 34rem) {
     .exp__period { margin-left: 0; width: 100%; }

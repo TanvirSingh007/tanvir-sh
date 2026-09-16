@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile } from '../data/profile';
+import { breadcrumbSchema } from '../lib/jsonld';
+
+const title = `Homelab — ${profile.name}`;
+const description =
+  'Self-hosted infrastructure run to production standards: Unraid and Portainer, ' +
+  'nginx and cloudflared ingress, hardware-accelerated inference, all reproducible ' +
+  'from git.';
+
+const inventory = [
+  { role: 'ingress', items: 'nginx · cloudflared tunnels · internal domain' },
+  { role: 'scm / ci', items: 'GitLab CE' },
+  { role: 'platform', items: 'Appwrite · self-hosted backend · multi-container' },
+  { role: 'vision', items: 'Frigate · Intel iGPU inference' },
+  { role: 'photos', items: 'Immich · dedicated ML container · pgvector' },
+  { role: 'data', items: 'Nextcloud · PostgreSQL · Valkey' },
+  { role: 'home', items: 'Home Assistant' },
+  { role: 'secrets', items: 'Bitwarden' },
+  { role: 'media', items: 'Jellyfin' },
+];
+---
+
+<Base
+  {title}
+  {description}
+  cwd="~"
+  jsonLd={breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Homelab', path: '/homelab/' },
+  ])}
+>
+  <span slot="command">cat homelab.md</span>
+
+  <h1>Homelab</h1>
+  <p class="lede">
+    Nobody pays me for this one. I run it because operating a system teaches you
+    things that reading about it does not, and because I would rather my photos and
+    passwords live on hardware I can see.
+  </p>
+
+  <p>
+    It runs on <strong>Unraid</strong>, with every service deployed as a
+    <strong>Portainer-managed compose stack</strong>. The rule I hold myself to is
+    the same one I would hold at work: <strong>everything is reproducible from a git
+    repository</strong>. No snowflake containers, no configuration that exists only
+    in my head or only on that box.
+  </p>
+
+  <h2>What runs</h2>
+  <dl class="inv">
+    {inventory.map((row) => (
+      <div class="inv__row">
+        <dt>{row.role}</dt>
+        <dd>{row.items}</dd>
+      </div>
+    ))}
+  </dl>
+
+  <h2>Getting traffic in</h2>
+  <p>
+    Forwarded ports land on <strong>nginx</strong>, which reverse-proxies everything
+    onto an internal domain so services are addressable by name rather than by
+    remembering which of them is on port
+    8971. <strong>Cloudflared tunnels</strong> carry a subset of services that need to
+    be reachable from outside without widening what is exposed at the edge.
+  </p>
+  <p>
+    Deciding what belongs on which path took more thought than the proxying did.
+    Anything holding credentials or personal data stays behind the internal domain,
+    and only what genuinely needs outside access gets a tunnel.
+  </p>
+
+  <h2>Inference on the box</h2>
+  <p>
+    Two services here do real machine-learning work, and both run on hardware I
+    already own rather than on somebody's API.
+  </p>
+  <p>
+    <strong>Frigate</strong> runs continuous object detection over camera feeds with
+    the <strong>Intel iGPU passed through</strong> for decode and inference. Doing
+    this on the CPU pins the machine permanently; handing it to the GPU makes
+    always-on detection something the box can do while also serving everything else.
+  </p>
+  <p>
+    <strong>Immich</strong> runs a dedicated machine-learning container against
+    PostgreSQL with <strong>pgvector and VectorChord</strong>, which is what makes
+    searching a photo library by what is in the picture work. It is the same shape as
+    a production retrieval stack, at house scale.
+  </p>
+
+  <h2>What it taught me</h2>
+  <p>
+    Running this is the reason I am comfortable owning infrastructure at work. Backups
+    you have never restored are not backups. A service you cannot rebuild from a
+    definition is a liability. Certificates expire on the least convenient day
+    available. None of that is knowledge I got from documentation.
+  </p>
+
+  <style>
+    .lede {
+      font-family: var(--mono);
+      font-size: var(--step-1);
+      color: var(--text-dim);
+      max-width: 52ch;
+      text-wrap: pretty;
+    }
+    p { color: var(--text-dim); }
+    p strong { color: var(--text); font-weight: 600; }
+
+    .inv {
+      margin: 0 0 1rem;
+      border: 1px solid var(--border);
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+    }
+    .inv__row {
+      background: var(--bg);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1.25rem;
+      padding: 0.7rem 1rem;
+    }
+    .inv dt {
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--accent);
+      flex: 0 0 7rem;
+    }
+    .inv dd {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--text-dim);
+    }
+    @media (max-width: 30rem) {
+      .inv dt { flex-basis: 100%; }
+    }
+  </style>
+</Base>

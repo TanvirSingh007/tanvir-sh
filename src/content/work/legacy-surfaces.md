@@ -4,6 +4,8 @@ summary: 'A **native C++ crash** in a record merge, **Exchange connectors duplic
 role: 'Engineering owner'
 period: '2024 — present'
 stack: ['C++', 'Scala', 'Akka', 'Ruby on Rails', 'PostgreSQL', 'SSIS']
+domains: ['backend', 'native']
+context: 'trilogy'
 order: 6
 featured: false
 ---

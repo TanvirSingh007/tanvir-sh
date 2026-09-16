@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { profile, site } from '../data/profile';
+import Experience from '../components/Experience.astro';
+import { domains } from '../data/domains';
 import { emphasize, plain } from '../lib/emphasis';
 import { profilePageSchema } from '../lib/jsonld';
 
@@ -25,6 +27,9 @@ const plainSummary = plain(profile.summary);
     </p>
     <p class="summary" set:html={emphasize(profile.summary)} />
 
+    <p class="stats__src mono">
+      two years at <a href="/experience/trilogy/">Trilogy</a>, across six enterprise products
+    </p>
     <dl class="stats">
       {profile.stats.map((s) => (
         <div>
@@ -35,24 +40,32 @@ const plainSummary = plain(profile.summary);
     </dl>
   </section>
 
-  <section id="agents" aria-labelledby="agents-h">
-    <p class="prompt" data-cwd="~"><span>cat agents.md</span></p>
-    <h2 id="agents-h">Engineering with agents</h2>
+  <section id="domains" aria-labelledby="domains-h">
+    <p class="prompt" data-cwd="~"><span>cat capabilities.md</span></p>
+    <h2 id="domains-h">What I do</h2>
     <p class="summary">
-      Since 2025 most of my work has been making AI agents genuinely useful on
-      products they could not touch before: <strong>harnesses</strong> for
-      platforms they cannot reach, the <strong>knowledge base</strong> they
-      answer from, and the check that makes the output trustworthy, where every
-      regression test has to be <strong>observed failing</strong> before a fix
-      goes back in.
+      Four areas, and I have shipped in all of them. Every line below links to the
+      work it came from.
     </p>
-    <p class="summary">
-      The pipelines built on top take a defect ticket through reproduction, crash
-      dump analysis, fix, pull request, tests and review. They are <strong>used
-      across the team</strong> now, and my own merged output went
-      from <strong>41 changes in 2024 to 179 so far this year</strong>.
-    </p>
-    <p class="more mono"><a href="/agents/">how it works →</a></p>
+
+    <ol class="caps">
+      {domains.map((d, i) => (
+        <li class="caps__item">
+          <div class="caps__head">
+            <span class="caps__n">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{d.label}</h3>
+          </div>
+          <p class="caps__blurb">{d.blurb}</p>
+          <ul class="caps__proof">
+            {d.proof.map((pf) => (
+              <li>
+                <a href={pf.href} set:html={emphasize(pf.text)} />
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
   </section>
 
   <section id="work" aria-labelledby="work-h">
@@ -74,6 +87,13 @@ const plainSummary = plain(profile.summary);
       </ul>
     )}
     <p class="more mono"><a href="/work/">all work →</a></p>
+  </section>
+
+  <section id="experience" aria-labelledby="experience-h">
+    <p class="prompt" data-cwd="~"><span>cat experience.txt</span></p>
+    <h2 id="experience-h">Where I have worked</h2>
+    <Experience />
+    <p class="more mono"><a href="/experience/">education and certifications →</a></p>
   </section>
 
   <section id="stack" aria-labelledby="stack-h">
@@ -107,6 +127,13 @@ const plainSummary = plain(profile.summary);
     }
     .lede strong { color: var(--text); font-weight: 600; }
     .summary { color: var(--text-dim); }
+    .stats__src {
+      font-size: var(--step--1);
+      color: var(--text-faint);
+      margin: 2rem 0 -1.25rem;
+    }
+    .stats__src a { color: var(--text-dim); text-decoration-color: var(--border); }
+    .stats__src a:hover { color: var(--accent); text-decoration-color: var(--accent); }
     .summary strong { color: var(--text); font-weight: 600; }
     .domain { margin-bottom: 1.1rem; }
     .domain:last-child { margin-bottom: 0; }
@@ -114,6 +141,64 @@ const plainSummary = plain(profile.summary);
     .more { margin-top: 1.25rem; font-size: var(--step--1); }
     .more a { text-decoration: none; color: var(--accent); }
     .more a:hover { text-decoration: underline; }
+
+    .caps {
+      list-style: none;
+      margin: 1.75rem 0 0;
+      padding: 0;
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .caps__item { background: var(--bg); padding: 1.4rem 1.25rem; }
+    .caps__head { display: flex; align-items: baseline; gap: 0.75rem; }
+    .caps__n {
+      font-family: var(--mono);
+      font-size: var(--step--1);
+      color: var(--accent);
+      flex: 0 0 auto;
+    }
+    .caps__head h3 {
+      font-size: var(--step-1);
+      margin: 0;
+      letter-spacing: -0.015em;
+    }
+    .caps__blurb {
+      color: var(--text-faint);
+      font-size: var(--step--1);
+      margin: 0.5rem 0 0.9rem;
+      padding-left: 2.1rem;
+      max-width: 60ch;
+    }
+    .caps__proof { list-style: none; margin: 0; padding: 0 0 0 2.1rem; }
+    .caps__proof li { margin-bottom: 0.4rem; }
+    .caps__proof li:last-child { margin-bottom: 0; }
+    .caps__proof a {
+      display: block;
+      color: var(--text-dim);
+      font-size: var(--step--1);
+      line-height: 1.65;
+      text-decoration: none;
+      position: relative;
+      padding-left: 1.1rem;
+    }
+    .caps__proof a::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.85em;
+    }
+    .caps__proof a :global(strong) { color: var(--text); font-weight: 600; }
+    .caps__proof a:hover,
+    .caps__proof a:focus-visible { color: var(--text); text-decoration: underline; }
+    .caps__proof a:hover :global(strong) { color: var(--accent); }
+
+    @media (max-width: 34rem) {
+      .caps__blurb, .caps__proof { padding-left: 0; }
+    }
 
   </style>
 </Base>

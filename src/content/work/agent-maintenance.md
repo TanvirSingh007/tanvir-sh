@@ -4,6 +4,8 @@ summary: 'Built the **agent infrastructure** that now triages, fixes, tests and 
 role: 'Sole author, adopted team-wide'
 period: '2025 — present'
 stack: ['Claude Code', 'MCP', 'GitHub Actions', 'Python', 'PowerShell']
+domains: ['ai', 'infra']
+context: 'trilogy'
 order: 1
 featured: true
 ---

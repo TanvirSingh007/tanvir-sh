@@ -1,6 +1,7 @@
 import { OGImageRoute } from 'astro-og-canvas';
 import { getCollection } from 'astro:content';
 import { profile } from '../../data/profile';
+import { companies } from '../../data/companies';
 import { plain } from '../../lib/emphasis';
 
 const work = await getCollection('work');
@@ -10,6 +11,10 @@ const pages: Record<string, { title: string; description: string }> = {
   about: { title: 'About', description: profile.tagline },
   agents: { title: 'Engineering with agents', description: 'Harnesses, context and the check that makes agent output trustworthy.' },
   experience: { title: 'Experience', description: 'Roles, education and background.' },
+  homelab: { title: 'Homelab', description: 'Self-hosted infrastructure run to production standards.' },
+  ...Object.fromEntries(
+    companies.map((c) => [`experience/${c.slug}`, { title: c.name, description: `${c.role} · ${c.period}` }])
+  ),
   work: { title: 'Work', description: 'Selected engineering work.' },
   ...Object.fromEntries(
     // Canvas draws plain text, so the emphasis markers have to come out.
